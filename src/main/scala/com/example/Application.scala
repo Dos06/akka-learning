@@ -16,6 +16,7 @@ object Application extends App {
   var item3 = Item(3, "i3", 300)
 
   var arr = Array(item1, item2, item3)
+//  arr = arr.patch(1, Nil, 1)
 
   val route =
     path("") {
@@ -30,6 +31,53 @@ object Application extends App {
           complete("Item created")
         }
       }
+    }~
+    pathPrefix("delete") {
+      concat(
+        pathEnd {
+          complete("/item")
+        },
+        path(IntNumber) { int =>
+          delete {
+            var index: Int = -1
+            var counter = 0
+            for (v <- arr) {
+              if (v.id == int) index = counter
+              counter += 1
+            }
+            if (index >= 0) {
+              arr = arr.patch(index, Nil, 1)
+              complete("Item deleted")
+            }
+            else complete("Not found")
+          }
+        }
+      )
+    }~
+    pathPrefix("update") {
+      concat(
+        pathEnd {
+          complete("/item")
+        },
+        path(IntNumber) { int =>
+          put {
+            parameter("name", "price".as[Int]) { (name, price) =>
+              var index: Int = -1
+              var counter = 0
+              for (v <- arr) {
+                if (v.id == int) index = counter
+                counter += 1
+              }
+              if (index >= 0) {
+                arr(index).name = name
+                arr(index).price = price
+                complete("Item updated")
+              }
+              else complete("Not found")
+            }
+          }
+        }
+      )
     }~
     path("items") {
       get {
@@ -48,7 +96,14 @@ object Application extends App {
           complete("/item")
         },
         path(IntNumber) { int =>
-          complete(arr(int).toString)
+          var index = -1
+          var counter = 0
+          for (v <- arr) {
+            if (v.id == int) index = counter
+            counter += 1
+          }
+          if (index >= 0) complete(arr(index).toString)
+          else complete("Not found")
         }
       )
     }

@@ -5,16 +5,15 @@ import akka.stream.ActorMaterializer
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
-import scalafix.internal.util.TypeExtractors.Nothing
 
 object Application extends App {
   implicit val system = ActorSystem("A-system")
   implicit val materializer = ActorMaterializer
   implicit val ec = system.dispatcher
 
-  var item1 = new Item(1, "i1", 100)
-  var item2 = new Item(2, "i2", 200)
-  var item3 = new Item(3, "i3", 300)
+  var item1 = Item(1, "i1", 100)
+  var item2 = Item(2, "i2", 200)
+  var item3 = Item(3, "i3", 300)
 
   var arr = Array(item1, item2, item3)
 
@@ -27,7 +26,7 @@ object Application extends App {
     path("item") {
       post {
         parameter("id".as[Int], "name", "price".as[Int]) { (id, name, price) =>
-          arr :+ new Item(id, name, price)
+          arr = arr :+ Item(id, name, price)
           complete("Item created")
         }
       }
@@ -52,7 +51,6 @@ object Application extends App {
           complete(arr(int).toString)
         }
       )
-
     }
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)

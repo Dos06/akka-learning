@@ -38,43 +38,44 @@ class Database {
   def getItem(itemId: Int): Item = {
     val sql = "SELECT name, price FROM items WHERE id = ?"
 
-    var name: String = ""
-    var price: Int = 0
-
     val conn = getConnection()
     val pst = conn.prepareStatement(sql)
     pst.setInt(1, itemId)
 
     val rs = pst.executeQuery()
-    conn.close()
+    var item = Item(0, "", 0)
 
     while (rs.next()) {
-      name = rs.getString("name")
-      price = rs.getInt("price")
+      item = Item(itemId, rs.getString("name"), rs.getInt("price"))
     }
+    conn.close()
 
-    Item(itemId, name, price)
+    item
   }
 
-  def getItems(itemId: Int): Array[Item] = {
-    val sql = "SELECT name, price FROM items"
+  def getItems: Array[Item] = {
+    val sql = "SELECT id, name, price FROM items"
 
+    var id = 0
     var name: String = ""
     var price: Int = 0
     val array = Array[Item]()
 
     val conn = getConnection()
     val pst = conn.prepareStatement(sql)
-    pst.setInt(1, itemId)
 
     val rs = pst.executeQuery()
-    conn.close()
 
     while (rs.next()) {
+      id = rs.getInt("id")
       name = rs.getString("name")
       price = rs.getInt("price")
-      array :+ Item(itemId, name, price)
+      val item = Item(id, name, price)
+      array :+ item
+      println(item)
     }
+
+    conn.close()
 
     array
   }

@@ -21,14 +21,7 @@ libraryDependencies ++= Seq(
 //  "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
 //  "com.typesafe.akka" %% "akka-http-spray-json" % "10.2.3",
 
-
-//  "com.lightbend.akka" %% "akka-stream-alpakka-mongodb" % "2.0.2",
-//  "org.reactivemongo" %% "reactivemongo" % "0.20.13",
-//  "org.reactivemongo" %% "reactivemongo-akkastream" % "0.20.13",
-//  "org.reactivemongo" %% "reactivemongo-scalafix" % "1.0.2",
-
   "com.typesafe.akka" %% "akka-http-core" % "10.2.3",
-//  "org.mongodb.scala" %% "mongo-scala-driver" % "4.1.1",
 
 //  "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
@@ -42,9 +35,14 @@ libraryDependencies ++= Seq(
   "com.zaxxer" % "HikariCP" % "3.4.1",
   "com.typesafe.slick" %% "slick-hikaricp" % "3.3.3",
 
+  "com.typesafe.slick" %% "slick" % "3.3.3",
+//  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.1",
+  "org.slf4j" % "slf4j-nop" % "1.7.26",
+//  "org.slf4j" % "slf4j-nop" % "1.6.4",
+
   "mysql" % "mysql-connector-java" % "8.0.23",
 
-  "ch.qos.logback" % "logback-classic" % "1.2.3",
+//  "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.scalatest" %% "scalatest" % "3.2.2" % Test,
   "joda-time" % "joda-time" % "2.10.5"
 )

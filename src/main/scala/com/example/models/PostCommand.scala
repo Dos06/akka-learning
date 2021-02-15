@@ -10,8 +10,6 @@ case class CreatePostCommand(date: Long,
                              name: String,
                              address: String) extends PostCommand
 
-
-
 case class RegisterPostCommand(date: Long,
                                postId: String) extends PostCommand
 

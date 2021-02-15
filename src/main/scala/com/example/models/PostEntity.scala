@@ -60,6 +60,26 @@ object PostEntity {
           state = PostEntityState.SEND
         )
       }
+
+      case event: SendPostEvent => {
+        copy(
+          content = content.copy(
+            date = Some(event.date),
+            postId = Some(event.postId)
+          ),
+          state = PostEntityState.FINISH
+        )
+      }
+
+      case event: ReceivePostEvent => {
+        copy(
+          content = content.copy(
+            date = Some(event.date),
+            postId = Some(event.postId)
+          ),
+          state = PostEntityState.CLOSE
+        )
+      }
     }
   }
 
@@ -86,17 +106,14 @@ object PostEntity {
       case command: CreatePostCommand => {
         state.state match {
           case PostEntityState.INIT => {
-
             val event = CreatePostEvent(
               date = command.date,
               postId = command.postId,
               name = command.name,
               address = command.address
             )
-
             Effect.persist(event)
           }
-
           case _ => throw new RuntimeException("Error")
         }
       }
@@ -104,15 +121,37 @@ object PostEntity {
       case command: RegisterPostCommand => {
         state.state match {
           case PostEntityState.REGISTER => {
-
             val event = RegisterPostEvent(
               date = command.date,
               postId = command.postId
             )
-
             Effect.persist(event)
           }
 
+        }
+      }
+
+      case command: SendPostCommand => {
+        state.state match {
+          case PostEntityState.SEND => {
+            val event = SendPostEvent(
+              date = command.date,
+              postId = command.postId
+            )
+            Effect.persist(event)
+          }
+        }
+      }
+
+      case command: ReceivePostCommand => {
+        state.state match {
+          case PostEntityState.FINISH => {
+            val event = ReceivePostEvent(
+              date = command.date,
+              postId = command.postId
+            )
+            Effect.persist(event)
+          }
         }
       }
     }

@@ -7,7 +7,6 @@ case class CreatePostEvent(date: Long,
                            name: String,
                            address: String) extends PostEvent
 
-
 case class RegisterPostEvent(date: Long,
                              postId: String) extends PostEvent
 

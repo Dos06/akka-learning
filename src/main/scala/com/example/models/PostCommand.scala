@@ -16,5 +16,8 @@ case class RegisterPostCommand(date: Long,
 case class SendPostCommand(date: Long,
                            postId: String) extends PostCommand
 
+case class ResendPostCommand(date: Long,
+                           postId: String) extends PostCommand
+
 case class ReceivePostCommand(date: Long,
                               postId: String) extends PostCommand

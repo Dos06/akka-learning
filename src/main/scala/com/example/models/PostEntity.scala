@@ -3,7 +3,8 @@ package com.example.models
 import akka.actor.typed.Behavior
 import akka.cluster.sharding.typed.scaladsl.EntityTypeKey
 import akka.persistence.typed.PersistenceId
-import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
+import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior, RetentionCriteria}
+import com.example.adapter.PostEventAdapter
 
 object PostEntity {
 
@@ -24,11 +25,13 @@ object PostEntity {
 
   object PostEntityState {
 
-    case object REGISTER extends PostEntityState
-
     case object INIT extends PostEntityState
 
+    case object REGISTER extends PostEntityState
+
     case object SEND extends PostEntityState
+
+    case object RESEND extends PostEntityState
 
     case object FINISH extends PostEntityState
 
@@ -71,6 +74,16 @@ object PostEntity {
         )
       }
 
+      case event: ResendPostEvent => {
+        copy(
+          content = content.copy(
+            date = Some(event.date),
+            postId = Some(event.postId)
+          ),
+          state = PostEntityState.RESEND
+        )
+      }
+
       case event: ReceivePostEvent => {
         copy(
           content = content.copy(
@@ -90,14 +103,15 @@ object PostEntity {
 
   val EntityKey: EntityTypeKey[PostCommand] = EntityTypeKey[PostCommand]("Post")
 
-
-  def apply(postId: String): Behavior[PostCommand] = {
+  def apply(postId: String, eventProcessorTag: Set[String]): Behavior[PostCommand] = {
     EventSourcedBehavior[PostCommand, PostEvent, StateHolder](
       persistenceId = PersistenceId(EntityKey.name, postId),
       StateHolder.empty,
       (state, command) => commandHandler(postId, state, command),
       (state, event) => handleEvent(state, event)
-    )
+    ).withTagger(_ => eventProcessorTag)
+      .withRetention(RetentionCriteria.snapshotEvery(numberOfEvents = 10, keepNSnapshots = 2))
+      .eventAdapter(new PostEventAdapter)
   }
 
 
@@ -135,6 +149,18 @@ object PostEntity {
         state.state match {
           case PostEntityState.SEND => {
             val event = SendPostEvent(
+              date = command.date,
+              postId = command.postId
+            )
+            Effect.persist(event)
+          }
+        }
+      }
+
+      case command: ResendPostCommand => {
+        state.state match {
+          case PostEntityState.RESEND => {
+            val event = ResendPostEvent(
               date = command.date,
               postId = command.postId
             )

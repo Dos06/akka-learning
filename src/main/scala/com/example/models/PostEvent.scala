@@ -13,5 +13,8 @@ case class RegisterPostEvent(date: Long,
 case class SendPostEvent(date: Long,
                          postId: String) extends PostEvent
 
+case class ResendPostEvent(date: Long,
+                         postId: String) extends PostEvent
+
 case class ReceivePostEvent(date: Long,
                             postId: String) extends PostEvent

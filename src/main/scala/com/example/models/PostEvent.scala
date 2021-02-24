@@ -18,3 +18,12 @@ case class ResendPostEvent(date: Long,
 
 case class ReceivePostEvent(date: Long,
                             postId: String) extends PostEvent
+
+case class LosePostEvent(date: Long,
+                         postId: String) extends PostEvent
+
+case class ReturnPostEvent(date: Long,
+                         postId: String) extends PostEvent
+
+case class AcceptBackPostEvent(date: Long,
+                            postId: String) extends PostEvent

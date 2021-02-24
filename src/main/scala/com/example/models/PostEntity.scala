@@ -26,16 +26,14 @@ object PostEntity {
   object PostEntityState {
 
     case object INIT extends PostEntityState
-
     case object REGISTER extends PostEntityState
-
     case object SEND extends PostEntityState
-
     case object RESEND extends PostEntityState
-
     case object FINISH extends PostEntityState
-
     case object CLOSE extends PostEntityState
+    case object LOST extends PostEntityState
+    case object RETURNED extends PostEntityState
+    case object ACCEPTED_BACK extends PostEntityState
 
   }
 
@@ -85,6 +83,36 @@ object PostEntity {
       }
 
       case event: ReceivePostEvent => {
+        copy(
+          content = content.copy(
+            date = Some(event.date),
+            postId = Some(event.postId)
+          ),
+          state = PostEntityState.CLOSE
+        )
+      }
+
+      case event: LosePostEvent => {
+        copy(
+          content = content.copy(
+            date = Some(event.date),
+            postId = Some(event.postId)
+          ),
+          state = PostEntityState.FINISH
+        )
+      }
+
+      case event: ReturnPostEvent => {
+        copy(
+          content = content.copy(
+            date = Some(event.date),
+            postId = Some(event.postId)
+          ),
+          state = PostEntityState.RESEND
+        )
+      }
+
+      case event: AcceptBackPostEvent => {
         copy(
           content = content.copy(
             date = Some(event.date),
@@ -172,6 +200,42 @@ object PostEntity {
       case command: ReceivePostCommand => {
         state.state match {
           case PostEntityState.FINISH => {
+            val event = ReceivePostEvent(
+              date = command.date,
+              postId = command.postId
+            )
+            Effect.persist(event)
+          }
+        }
+      }
+
+      case command: LosePostCommand => {
+        state.state match {
+          case PostEntityState.LOST => {
+            val event = SendPostEvent(
+              date = command.date,
+              postId = command.postId
+            )
+            Effect.persist(event)
+          }
+        }
+      }
+
+      case command: ReturnPostCommand => {
+        state.state match {
+          case PostEntityState.RETURNED => {
+            val event = ResendPostEvent(
+              date = command.date,
+              postId = command.postId
+            )
+            Effect.persist(event)
+          }
+        }
+      }
+
+      case command: AcceptBackPostCommand => {
+        state.state match {
+          case PostEntityState.ACCEPTED_BACK => {
             val event = ReceivePostEvent(
               date = command.date,
               postId = command.postId

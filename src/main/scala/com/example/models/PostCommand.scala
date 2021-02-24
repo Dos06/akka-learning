@@ -21,3 +21,12 @@ case class ResendPostCommand(date: Long,
 
 case class ReceivePostCommand(date: Long,
                               postId: String) extends PostCommand
+
+case class LosePostCommand(date: Long,
+                           postId: String) extends PostCommand
+
+case class ReturnPostCommand(date: Long,
+                           postId: String) extends PostCommand
+
+case class AcceptBackPostCommand(date: Long,
+                              postId: String) extends PostCommand

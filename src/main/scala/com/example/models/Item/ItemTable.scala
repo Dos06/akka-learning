@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.Item
 
 import slick.jdbc.MySQLProfile.api._
 

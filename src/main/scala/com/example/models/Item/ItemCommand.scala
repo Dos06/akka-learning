@@ -1,7 +1,8 @@
-package com.example.models
+package com.example.models.Item
 
 import akka.Done
 import akka.actor.typed.ActorRef
+import com.example.models.Summary
 
 trait ItemCommand
 

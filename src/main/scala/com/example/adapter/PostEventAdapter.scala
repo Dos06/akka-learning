@@ -1,7 +1,7 @@
 package com.example.adapter
 
 import akka.persistence.typed.{EventAdapter, EventSeq}
-import com.example.models.{CreatePostEvent, PostEvent, RegisterPostEvent}
+import com.example.models.Post.{CreatePostEvent, PostEvent, RegisterPostEvent}
 
 class PostEventAdapter() extends EventAdapter[PostEvent, PostWrapper] {
   override def toJournal(e: PostEvent): PostWrapper = {

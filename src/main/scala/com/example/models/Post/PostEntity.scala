@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.Post
 
 import akka.actor.typed.Behavior
 import akka.cluster.sharding.typed.scaladsl.EntityTypeKey
@@ -26,13 +26,21 @@ object PostEntity {
   object PostEntityState {
 
     case object INIT extends PostEntityState
+
     case object REGISTER extends PostEntityState
+
     case object SEND extends PostEntityState
+
     case object RESEND extends PostEntityState
+
     case object FINISH extends PostEntityState
+
     case object CLOSE extends PostEntityState
+
     case object LOST extends PostEntityState
+
     case object RETURNED extends PostEntityState
+
     case object ACCEPTED_BACK extends PostEntityState
 
   }

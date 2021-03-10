@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import com.example.models.{Item, ItemTable}
+import com.example.models.Item.{Item, ItemTable}
 import slick.jdbc.MySQLProfile.api._
 
 import scala.concurrent.Future

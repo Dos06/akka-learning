@@ -4,7 +4,8 @@ import akka.Done
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import com.example.Database
-import com.example.models.{AddItemCommand, DeleteItemCommand, EditItemCommand, GetItemCommand, GetItemsCommand, ItemCommand, Summary}
+import com.example.models.Item.{AddItemCommand, DeleteItemCommand, EditItemCommand, GetItemCommand, GetItemsCommand, ItemCommand}
+import com.example.models.Summary
 
 object ItemActor {
   def apply(database: Database): Behavior[ItemCommand] = {

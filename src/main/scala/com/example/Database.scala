@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.models.Item
+import com.example.models.Item.Item
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 
 class Database {

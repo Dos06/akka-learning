@@ -2,20 +2,23 @@ package com.example.routes
 
 import akka.Done
 import akka.actor.typed.ActorSystem
-import akka.http.scaladsl.server.Directives.{entity, _}
-import akka.http.scaladsl.server.Route
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import com.example.models.Summary
-import com.example.util.Codec
 import akka.actor.typed.scaladsl.AskPattern._
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 import com.example.models.Item.{AddItemCommand, DeleteItemCommand, EditItemCommand, GetItemCommand, GetItemsCommand, Item, ItemCommand}
+import com.example.models._
+import com.typesafe.config.Config
+import com.example.util.Codec
+import com.sksamuel.elastic4s.ElasticClient
+import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 
-class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSystem[_]) extends Codec with FailFastCirceSupport {
-
+class ElasticItemRoutes(elasticSearchClient: ElasticClient, itemActor: ActorSystem[ItemCommand])(implicit system: ActorSystem[_],
+                                                            implicit val executionContext: ExecutionContext,
+                                                            config: Config) extends Codec with FailFastCirceSupport {
   implicit val timeout: Timeout = 3.seconds
 
   val routes: Route = {
@@ -47,7 +50,6 @@ class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSyst
         onComplete(reply) { summary =>
           complete(summary)
         }
-
       }
     }
   }
@@ -55,15 +57,6 @@ class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSyst
   def itemAddRoute(): Route = {
     pathPrefix("item" / "add") {
       post {
-//        entity(as[Item]) { entity =>
-//          val reply: Future[Summary] = itemActor.ask(AddItemCommand(entity, _))
-//
-//          onComplete(reply) { summary =>
-//            complete(summary)
-//          }
-//
-//        }
-
         parameter("name", "price".as[Int]) { (name, price) =>
           val item = Item(0, name, price)
           val reply: Future[Summary] = itemActor.ask(AddItemCommand(item, _))
@@ -72,7 +65,6 @@ class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSyst
             complete(summary)
           }
         }
-
       }
     }
   }
@@ -80,15 +72,6 @@ class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSyst
   def itemEditRoute(): Route = {
     pathPrefix("item" / "edit") {
       put {
-//        entity(as[Item]) { entity =>
-//          val reply: Future[Summary] = itemActor.ask(EditItemCommand(entity, _))
-//
-//          onComplete(reply) { summary =>
-//            complete(summary)
-//          }
-//
-//        }
-
         parameter("id".as[Int], "name", "price".as[Int]) { (id, name, price) =>
           val item = Item(id, name, price)
           val reply: Future[Summary] = itemActor.ask(EditItemCommand(item, _))
@@ -97,7 +80,6 @@ class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSyst
             complete(summary)
           }
         }
-
       }
     }
   }
@@ -111,7 +93,6 @@ class ItemRoutes(itemActor: ActorSystem[ItemCommand])(implicit system: ActorSyst
           onComplete(reply) { summary =>
             complete(summary)
           }
-
         }
       }
     }

@@ -11,6 +11,7 @@ val circeVersion = "0.13.0"
 val akkaPersistenceCassandraVersion = "1.0.3"
 val akkaProjectionVersion = "1.0.0"
 val swaggerVersion = "2.1.1"
+lazy val elastic4sVersion = "7.11.0"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
@@ -66,7 +67,11 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.2" % Test,
   "joda-time" % "joda-time" % "2.10.5",
   "com.lightbend.akka" %% "akka-projection-testkit" % akkaProjectionVersion % Test,
-  "commons-io" % "commons-io" % "2.4" % Test
+  "commons-io" % "commons-io" % "2.4" % Test,
+
+  "com.sksamuel.elastic4s" %% "elastic4s-core" % elastic4sVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-json-circe" % elastic4sVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-client-akka" % elastic4sVersion,
 )
 
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"

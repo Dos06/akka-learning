@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.Post
 
 trait PostEvent
 
@@ -14,7 +14,7 @@ case class SendPostEvent(date: Long,
                          postId: String) extends PostEvent
 
 case class ResendPostEvent(date: Long,
-                         postId: String) extends PostEvent
+                           postId: String) extends PostEvent
 
 case class ReceivePostEvent(date: Long,
                             postId: String) extends PostEvent
@@ -23,7 +23,7 @@ case class LosePostEvent(date: Long,
                          postId: String) extends PostEvent
 
 case class ReturnPostEvent(date: Long,
-                         postId: String) extends PostEvent
+                           postId: String) extends PostEvent
 
 case class AcceptBackPostEvent(date: Long,
-                            postId: String) extends PostEvent
+                               postId: String) extends PostEvent
